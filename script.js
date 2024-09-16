@@ -66,7 +66,7 @@ function loadQuiz() {
             <ul class="options">
                 ${q.options.map((option, i) => `
                     <li>
-                        <input type="checkbox" name="q${index}" value="${option}" id="q${index}o${i}">
+                        <input type="radio" name="q${index}" value="${option}" id="q${index}o${i}">
                         <label for="q${index}o${i}">${option}</label>
                     </li>
                 `).join('')}
@@ -81,12 +81,12 @@ function calculateResults() {
     let score = 0;
     let resultsHtml = '';
     questions.forEach((q, index) => {
-        const selectedOptions = Array.from(document.querySelectorAll(`input[name="q${index}"]:checked`))
-                                    .map(input => input.value);
+        const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+        const selectedValue = selectedOption ? selectedOption.value : null;
         const correct = q.correct;
-        const hasCorrectAnswer = correct.some(val => selectedOptions.includes(val));
+        const incorrectOptions = q.options.filter(option => !correct.includes(option));
 
-        if (hasCorrectAnswer) {
+        if (correct.includes(selectedValue) && !incorrectOptions.includes(selectedValue)) {
             score++;
             resultsHtml += `<p>Pregunta ${index + 1}: Correcta (${correct.join(', ')})</p>`;
         } else {
